@@ -1,0 +1,2768 @@
+{
+    "name": "Integration Twilio, Airtable, OpenAI (ChatGPT, Whisper, DALL-E)",
+    "flow": [
+        {
+            "id": 1,
+            "module": "twilio:WatchMessages",
+            "version": 2,
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 1350,
+                    "messages": [
+                        {
+                            "category": "setup",
+                            "severity": "error",
+                            "message": "Value must not be empty."
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "airtable:ActionSearchRecords",
+            "version": 3,
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 1350
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 1350
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 27,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "number:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 0
+                                }
+                            }
+                        },
+                        {
+                            "id": 26,
+                            "module": "openai-gpt-3:CreateCompletion",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 4656486
+                            },
+                            "filter": {
+                                "name": "not first time buyer",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "number:greater"
+                                        },
+                                        {
+                                            "a": "{{2.`First Time Buyer`}}",
+                                            "b": "No",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{2.`Talked to a Lender?`}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "model": "gpt-4-1106-preview",
+                                "top_p": "1",
+                                "select": "chat",
+                                "messages": [
+                                    {
+                                        "role": "system",
+                                        "content": "You're a helpful assistant with a very specific role. You will receive a message. The message is from a user responding to a message asking them if they've talked to a lender and are prequalified to buy a house. If the user indicates that they have talked to a lender, you will simply respond 'yes' with no extra words or characters. If they indicate they haven't spoken to a lender, you will respond no with no extra words or characters. If your answer is not one of those two options great harm will be done and you'll be shut off forever."
+                                    },
+                                    {
+                                        "role": "user",
+                                        "content": "{{1.body}}"
+                                    }
+                                ],
+                                "max_tokens": "0",
+                                "temperature": "1",
+                                "n_completions": "1",
+                                "response_format": "text"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "stop": {
+                                            "mode": "chose"
+                                        },
+                                        "model": {
+                                            "mode": "chose",
+                                            "label": "gpt-4-1106-preview (system)"
+                                        },
+                                        "select": {
+                                            "label": "Create a Chat Completion (GPT and o1 models)"
+                                        },
+                                        "messages": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "Developer / System"
+                                                    }
+                                                },
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "User"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "logit_bias": {
+                                            "mode": "chose"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Text"
+                                        },
+                                        "additionalParameters": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "My OpenAI connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Select Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "chat",
+                                                "prompt"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "n_completions",
+                                        "type": "number",
+                                        "label": "Number"
+                                    },
+                                    {
+                                        "name": "frequency_penalty",
+                                        "type": "number",
+                                        "label": "Frequency Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "presence_penalty",
+                                        "type": "number",
+                                        "label": "Presence Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "logit_bias",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "token",
+                                                    "type": "text",
+                                                    "label": "Token ID",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "probability",
+                                                    "type": "number",
+                                                    "label": "Probability",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "max": 100,
+                                                        "min": -100
+                                                    }
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Token Probability"
+                                        },
+                                        "type": "array",
+                                        "label": "Token Probability"
+                                    },
+                                    {
+                                        "name": "seed",
+                                        "type": "integer",
+                                        "label": "Seed"
+                                    },
+                                    {
+                                        "name": "stop",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Stop Sequence"
+                                        },
+                                        "type": "array",
+                                        "label": "Stop Sequences",
+                                        "validate": {
+                                            "maxItems": 4
+                                        }
+                                    },
+                                    {
+                                        "name": "additionalParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "key",
+                                                    "type": "text",
+                                                    "label": "Parameter Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "type",
+                                                    "type": "select",
+                                                    "label": "Input Type",
+                                                    "options": [
+                                                        {
+                                                            "label": "Text",
+                                                            "value": "text",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ],
+                                                            "default": true
+                                                        },
+                                                        {
+                                                            "label": "Number",
+                                                            "value": "number",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "number",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Boolean",
+                                                            "value": "boolean",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "boolean",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Date",
+                                                            "value": "date",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "date",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Any",
+                                                            "value": "any",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "any",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Input Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Other Input Parameters"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "max_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "messages",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "role",
+                                                    "type": "select",
+                                                    "label": "Role",
+                                                    "options": {
+                                                        "store": [
+                                                            {
+                                                                "label": "Developer / System",
+                                                                "value": "system",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "User",
+                                                                "value": "user",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Assistant",
+                                                                "value": "assistant",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "required": true
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Message"
+                                        },
+                                        "type": "array",
+                                        "label": "Messages",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "text",
+                                                "json_object"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "result",
+                                        "type": "any",
+                                        "label": "Result"
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "object",
+                                        "type": "text",
+                                        "label": "Object"
+                                    },
+                                    {
+                                        "name": "created",
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "text",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "choices",
+                                        "spec": {
+                                            "spec": [
+                                                {
+                                                    "name": "text",
+                                                    "type": "text",
+                                                    "label": "Text"
+                                                },
+                                                {
+                                                    "name": "index",
+                                                    "type": "number",
+                                                    "label": "Index"
+                                                },
+                                                {
+                                                    "name": "logprobs",
+                                                    "type": "text",
+                                                    "label": "Log Probs"
+                                                },
+                                                {
+                                                    "name": "finish_reason",
+                                                    "type": "text",
+                                                    "label": "Finish Reason"
+                                                },
+                                                {
+                                                    "name": "message",
+                                                    "spec": [
+                                                        {
+                                                            "name": "role",
+                                                            "type": "text",
+                                                            "label": "Role"
+                                                        },
+                                                        {
+                                                            "name": "content",
+                                                            "type": "text",
+                                                            "label": "Content"
+                                                        },
+                                                        {
+                                                            "name": "refusal",
+                                                            "type": "text",
+                                                            "label": "Refusal"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Message"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        },
+                                        "type": "array",
+                                        "label": "Choices"
+                                    },
+                                    {
+                                        "name": "usage",
+                                        "spec": [
+                                            {
+                                                "name": "prompt_tokens",
+                                                "type": "number",
+                                                "label": "Prompt Tokens"
+                                            },
+                                            {
+                                                "name": "completion_tokens",
+                                                "type": "text",
+                                                "label": "Completion Tokens"
+                                            },
+                                            {
+                                                "name": "total_tokens",
+                                                "type": "number",
+                                                "label": "Total Tokens"
+                                            },
+                                            {
+                                                "name": "prompt_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "cached_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Cached Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "image_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Image Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Prompt Tokens Details"
+                                            },
+                                            {
+                                                "name": "completion_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "reasoning_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Reasoning Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    },
+                                                    {
+                                                        "name": "accepted_prediction_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Accepted Prediction Tokens"
+                                                    },
+                                                    {
+                                                        "name": "rejected_prediction_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Rejected Prediction Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Completion Tokens Details"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Usage"
+                                    },
+                                    {
+                                        "name": "system_fingerprint",
+                                        "type": "text",
+                                        "label": "System Fingerprint"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 28,
+                            "module": "twilio:SendSMS",
+                            "version": 2,
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`Seller Status`}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0,
+                                    "messages": [
+                                        {
+                                            "category": "setup",
+                                            "severity": "error",
+                                            "message": "Value must not be empty."
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 5,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "number:greater"
+                                        },
+                                        {
+                                            "a": "{{2.`Buyer/Seller`}}",
+                                            "b": "Buyer",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 900
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 13,
+                                            "module": "openai-gpt-3:CreateCompletion",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 4656486
+                                            },
+                                            "filter": {
+                                                "name": "not first time buyer",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                                            "b": "0",
+                                                            "o": "number:greater"
+                                                        },
+                                                        {
+                                                            "a": "{{2.`First Time Buyer`}}",
+                                                            "b": "No",
+                                                            "o": "text:equal"
+                                                        },
+                                                        {
+                                                            "a": "{{2.`Talked to a Lender?`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "model": "gpt-4-1106-preview",
+                                                "top_p": "1",
+                                                "select": "chat",
+                                                "messages": [
+                                                    {
+                                                        "role": "system",
+                                                        "content": "You're a helpful assistant with a very specific role. You will receive a message. The message is from a user responding to a message asking them if they've talked to a lender and are prequalified to buy a house. If the user indicates that they have talked to a lender, you will simply respond 'yes' with no extra words or characters. If they indicate they haven't spoken to a lender, you will respond no with no extra words or characters. If your answer is not one of those two options great harm will be done and you'll be shut off forever."
+                                                    },
+                                                    {
+                                                        "role": "user",
+                                                        "content": "{{1.body}}"
+                                                    }
+                                                ],
+                                                "max_tokens": "0",
+                                                "temperature": "1",
+                                                "n_completions": "1",
+                                                "response_format": "text"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 450
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "stop": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "model": {
+                                                            "mode": "chose",
+                                                            "label": "gpt-4-1106-preview (system)"
+                                                        },
+                                                        "select": {
+                                                            "label": "Create a Chat Completion (GPT and o1 models)"
+                                                        },
+                                                        "messages": {
+                                                            "mode": "chose",
+                                                            "items": [
+                                                                {
+                                                                    "role": {
+                                                                        "mode": "chose",
+                                                                        "label": "Developer / System"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "role": {
+                                                                        "mode": "chose",
+                                                                        "label": "User"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "logit_bias": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "response_format": {
+                                                            "mode": "chose",
+                                                            "label": "Text"
+                                                        },
+                                                        "additionalParameters": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "openai-gpt-3"
+                                                            },
+                                                            "label": "My OpenAI connection"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:openai-gpt-3",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "select",
+                                                        "type": "select",
+                                                        "label": "Select Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "chat",
+                                                                "prompt"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "temperature",
+                                                        "type": "number",
+                                                        "label": "Temperature",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": 0
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "top_p",
+                                                        "type": "number",
+                                                        "label": "Top P",
+                                                        "validate": {
+                                                            "max": 1,
+                                                            "min": 0
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "n_completions",
+                                                        "type": "number",
+                                                        "label": "Number"
+                                                    },
+                                                    {
+                                                        "name": "frequency_penalty",
+                                                        "type": "number",
+                                                        "label": "Frequency Penalty",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": -2
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "presence_penalty",
+                                                        "type": "number",
+                                                        "label": "Presence Penalty",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": -2
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "logit_bias",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "token",
+                                                                    "type": "text",
+                                                                    "label": "Token ID",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "probability",
+                                                                    "type": "number",
+                                                                    "label": "Probability",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "max": 100,
+                                                                        "min": -100
+                                                                    }
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Token Probability"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Token Probability"
+                                                    },
+                                                    {
+                                                        "name": "seed",
+                                                        "type": "integer",
+                                                        "label": "Seed"
+                                                    },
+                                                    {
+                                                        "name": "stop",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "type": "text",
+                                                            "label": "Stop Sequence"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Stop Sequences",
+                                                        "validate": {
+                                                            "maxItems": 4
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "additionalParameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "key",
+                                                                    "type": "text",
+                                                                    "label": "Parameter Name",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "select",
+                                                                    "label": "Input Type",
+                                                                    "options": [
+                                                                        {
+                                                                            "label": "Text",
+                                                                            "value": "text",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "text",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ],
+                                                                            "default": true
+                                                                        },
+                                                                        {
+                                                                            "label": "Number",
+                                                                            "value": "number",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "number",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Boolean",
+                                                                            "value": "boolean",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "boolean",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Date",
+                                                                            "value": "date",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "date",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Any",
+                                                                            "value": "any",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "any",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Input Parameter"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Other Input Parameters"
+                                                    },
+                                                    {
+                                                        "name": "model",
+                                                        "type": "select",
+                                                        "label": "Model",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "max_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Max Completion Tokens"
+                                                    },
+                                                    {
+                                                        "name": "messages",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "role",
+                                                                    "type": "select",
+                                                                    "label": "Role",
+                                                                    "options": {
+                                                                        "store": [
+                                                                            {
+                                                                                "label": "Developer / System",
+                                                                                "value": "system",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "label": "User",
+                                                                                "value": "user",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "label": "Assistant",
+                                                                                "value": "assistant",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "required": true
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Message"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Messages",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "response_format",
+                                                        "type": "select",
+                                                        "label": "Response Format",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "text",
+                                                                "json_object"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "result",
+                                                        "type": "any",
+                                                        "label": "Result"
+                                                    },
+                                                    {
+                                                        "name": "id",
+                                                        "type": "text",
+                                                        "label": "ID"
+                                                    },
+                                                    {
+                                                        "name": "object",
+                                                        "type": "text",
+                                                        "label": "Object"
+                                                    },
+                                                    {
+                                                        "name": "created",
+                                                        "type": "date",
+                                                        "label": "Created"
+                                                    },
+                                                    {
+                                                        "name": "model",
+                                                        "type": "text",
+                                                        "label": "Model"
+                                                    },
+                                                    {
+                                                        "name": "choices",
+                                                        "spec": {
+                                                            "spec": [
+                                                                {
+                                                                    "name": "text",
+                                                                    "type": "text",
+                                                                    "label": "Text"
+                                                                },
+                                                                {
+                                                                    "name": "index",
+                                                                    "type": "number",
+                                                                    "label": "Index"
+                                                                },
+                                                                {
+                                                                    "name": "logprobs",
+                                                                    "type": "text",
+                                                                    "label": "Log Probs"
+                                                                },
+                                                                {
+                                                                    "name": "finish_reason",
+                                                                    "type": "text",
+                                                                    "label": "Finish Reason"
+                                                                },
+                                                                {
+                                                                    "name": "message",
+                                                                    "spec": [
+                                                                        {
+                                                                            "name": "role",
+                                                                            "type": "text",
+                                                                            "label": "Role"
+                                                                        },
+                                                                        {
+                                                                            "name": "content",
+                                                                            "type": "text",
+                                                                            "label": "Content"
+                                                                        },
+                                                                        {
+                                                                            "name": "refusal",
+                                                                            "type": "text",
+                                                                            "label": "Refusal"
+                                                                        }
+                                                                    ],
+                                                                    "type": "collection",
+                                                                    "label": "Message"
+                                                                }
+                                                            ],
+                                                            "type": "collection"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Choices"
+                                                    },
+                                                    {
+                                                        "name": "usage",
+                                                        "spec": [
+                                                            {
+                                                                "name": "prompt_tokens",
+                                                                "type": "number",
+                                                                "label": "Prompt Tokens"
+                                                            },
+                                                            {
+                                                                "name": "completion_tokens",
+                                                                "type": "text",
+                                                                "label": "Completion Tokens"
+                                                            },
+                                                            {
+                                                                "name": "total_tokens",
+                                                                "type": "number",
+                                                                "label": "Total Tokens"
+                                                            },
+                                                            {
+                                                                "name": "prompt_tokens_details",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "cached_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Cached Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "text_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Text Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "image_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Image Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "audio_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Audio Tokens"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Prompt Tokens Details"
+                                                            },
+                                                            {
+                                                                "name": "completion_tokens_details",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "reasoning_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Reasoning Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "text_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Text Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "audio_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Audio Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "accepted_prediction_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Accepted Prediction Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "rejected_prediction_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Rejected Prediction Tokens"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Completion Tokens Details"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Usage"
+                                                    },
+                                                    {
+                                                        "name": "system_fingerprint",
+                                                        "type": "text",
+                                                        "label": "System Fingerprint"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 16,
+                                            "module": "builtin:BasicRouter",
+                                            "version": 1,
+                                            "mapper": null,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 450
+                                                }
+                                            },
+                                            "routes": [
+                                                {
+                                                    "flow": [
+                                                        {
+                                                            "id": 17,
+                                                            "module": "twilio:SendSMS",
+                                                            "version": 2,
+                                                            "filter": {
+                                                                "name": "",
+                                                                "conditions": [
+                                                                    [
+                                                                        {
+                                                                            "a": "{{2.`Seller Status`}}",
+                                                                            "o": "notexist"
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 1800,
+                                                                    "y": 300,
+                                                                    "messages": [
+                                                                        {
+                                                                            "category": "setup",
+                                                                            "severity": "error",
+                                                                            "message": "Value must not be empty."
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 18,
+                                                            "module": "airtable:ActionUpdateRecords",
+                                                            "version": 3,
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2100,
+                                                                    "y": 300
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "flow": [
+                                                        {
+                                                            "id": 19,
+                                                            "module": "twilio:SendSMS",
+                                                            "version": 2,
+                                                            "filter": {
+                                                                "name": "",
+                                                                "conditions": [
+                                                                    [
+                                                                        {
+                                                                            "a": "{{2.`Seller Status`}}",
+                                                                            "o": "notexist"
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 1800,
+                                                                    "y": 600,
+                                                                    "messages": [
+                                                                        {
+                                                                            "category": "setup",
+                                                                            "severity": "error",
+                                                                            "message": "Value must not be empty."
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 20,
+                                                            "module": "airtable:ActionUpdateRecords",
+                                                            "version": 3,
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2100,
+                                                                    "y": 600
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 14,
+                                            "module": "twilio:SendSMS",
+                                            "version": 2,
+                                            "filter": {
+                                                "name": "",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`Seller Status`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 900,
+                                                    "messages": [
+                                                        {
+                                                            "category": "setup",
+                                                            "severity": "error",
+                                                            "message": "Value must not be empty."
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 12,
+                                            "module": "openai-gpt-3:CreateCompletion",
+                                            "version": 1,
+                                            "parameters": {
+                                                "__IMTCONN__": 4656486
+                                            },
+                                            "filter": {
+                                                "name": "new",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`First Time Buyer`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "model": "gpt-4-1106-preview",
+                                                "top_p": "1",
+                                                "select": "chat",
+                                                "messages": [
+                                                    {
+                                                        "role": "system",
+                                                        "content": "You're a helpful assistant with a very specific role. You will receive a message. The message is from a user responding to a message asking them if they're a first time home buyer. Your job is to classify their response. Your answer will be binary, if they indicate they are a first time home buyer, you will simpy respond 'yes' with no extra words or characters. If they say they are not a first time home buyer, you will respond 'no' with no extra words or characters. If your response is not one of those responses great harm will be done and you'll be shut off forever."
+                                                    },
+                                                    {
+                                                        "role": "user",
+                                                        "content": "{{1.body}}"
+                                                    }
+                                                ],
+                                                "max_tokens": "0",
+                                                "temperature": "1",
+                                                "n_completions": "1",
+                                                "response_format": "text"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 1350
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "stop": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "model": {
+                                                            "mode": "chose",
+                                                            "label": "gpt-4-1106-preview (system)"
+                                                        },
+                                                        "select": {
+                                                            "label": "Create a Chat Completion (GPT and o1 models)"
+                                                        },
+                                                        "messages": {
+                                                            "mode": "chose",
+                                                            "items": [
+                                                                {
+                                                                    "role": {
+                                                                        "mode": "chose",
+                                                                        "label": "Developer / System"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "role": {
+                                                                        "mode": "chose",
+                                                                        "label": "User"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "logit_bias": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "response_format": {
+                                                            "mode": "chose",
+                                                            "label": "Text"
+                                                        },
+                                                        "additionalParameters": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "__IMTCONN__": {
+                                                            "data": {
+                                                                "scoped": "true",
+                                                                "connection": "openai-gpt-3"
+                                                            },
+                                                            "label": "My OpenAI connection"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "__IMTCONN__",
+                                                        "type": "account:openai-gpt-3",
+                                                        "label": "Connection",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "select",
+                                                        "type": "select",
+                                                        "label": "Select Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "chat",
+                                                                "prompt"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "temperature",
+                                                        "type": "number",
+                                                        "label": "Temperature",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": 0
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "top_p",
+                                                        "type": "number",
+                                                        "label": "Top P",
+                                                        "validate": {
+                                                            "max": 1,
+                                                            "min": 0
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "n_completions",
+                                                        "type": "number",
+                                                        "label": "Number"
+                                                    },
+                                                    {
+                                                        "name": "frequency_penalty",
+                                                        "type": "number",
+                                                        "label": "Frequency Penalty",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": -2
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "presence_penalty",
+                                                        "type": "number",
+                                                        "label": "Presence Penalty",
+                                                        "validate": {
+                                                            "max": 2,
+                                                            "min": -2
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "logit_bias",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "token",
+                                                                    "type": "text",
+                                                                    "label": "Token ID",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "probability",
+                                                                    "type": "number",
+                                                                    "label": "Probability",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "max": 100,
+                                                                        "min": -100
+                                                                    }
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Token Probability"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Token Probability"
+                                                    },
+                                                    {
+                                                        "name": "seed",
+                                                        "type": "integer",
+                                                        "label": "Seed"
+                                                    },
+                                                    {
+                                                        "name": "stop",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "type": "text",
+                                                            "label": "Stop Sequence"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Stop Sequences",
+                                                        "validate": {
+                                                            "maxItems": 4
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "additionalParameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "key",
+                                                                    "type": "text",
+                                                                    "label": "Parameter Name",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "select",
+                                                                    "label": "Input Type",
+                                                                    "options": [
+                                                                        {
+                                                                            "label": "Text",
+                                                                            "value": "text",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "text",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ],
+                                                                            "default": true
+                                                                        },
+                                                                        {
+                                                                            "label": "Number",
+                                                                            "value": "number",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "number",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Boolean",
+                                                                            "value": "boolean",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "boolean",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Date",
+                                                                            "value": "date",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "date",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "label": "Any",
+                                                                            "value": "any",
+                                                                            "nested": [
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "any",
+                                                                                    "label": "Parameter Value"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Input Parameter"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Other Input Parameters"
+                                                    },
+                                                    {
+                                                        "name": "model",
+                                                        "type": "select",
+                                                        "label": "Model",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "max_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Max Completion Tokens"
+                                                    },
+                                                    {
+                                                        "name": "messages",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "role",
+                                                                    "type": "select",
+                                                                    "label": "Role",
+                                                                    "options": {
+                                                                        "store": [
+                                                                            {
+                                                                                "label": "Developer / System",
+                                                                                "value": "system",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "label": "User",
+                                                                                "value": "user",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "label": "Assistant",
+                                                                                "value": "assistant",
+                                                                                "nested": [
+                                                                                    {
+                                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                                        "name": "content",
+                                                                                        "type": "text",
+                                                                                        "label": "Text Content"
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "required": true
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Message"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Messages",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "response_format",
+                                                        "type": "select",
+                                                        "label": "Response Format",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "text",
+                                                                "json_object"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "result",
+                                                        "type": "any",
+                                                        "label": "Result"
+                                                    },
+                                                    {
+                                                        "name": "id",
+                                                        "type": "text",
+                                                        "label": "ID"
+                                                    },
+                                                    {
+                                                        "name": "object",
+                                                        "type": "text",
+                                                        "label": "Object"
+                                                    },
+                                                    {
+                                                        "name": "created",
+                                                        "type": "date",
+                                                        "label": "Created"
+                                                    },
+                                                    {
+                                                        "name": "model",
+                                                        "type": "text",
+                                                        "label": "Model"
+                                                    },
+                                                    {
+                                                        "name": "choices",
+                                                        "spec": {
+                                                            "spec": [
+                                                                {
+                                                                    "name": "text",
+                                                                    "type": "text",
+                                                                    "label": "Text"
+                                                                },
+                                                                {
+                                                                    "name": "index",
+                                                                    "type": "number",
+                                                                    "label": "Index"
+                                                                },
+                                                                {
+                                                                    "name": "logprobs",
+                                                                    "type": "text",
+                                                                    "label": "Log Probs"
+                                                                },
+                                                                {
+                                                                    "name": "finish_reason",
+                                                                    "type": "text",
+                                                                    "label": "Finish Reason"
+                                                                },
+                                                                {
+                                                                    "name": "message",
+                                                                    "spec": [
+                                                                        {
+                                                                            "name": "role",
+                                                                            "type": "text",
+                                                                            "label": "Role"
+                                                                        },
+                                                                        {
+                                                                            "name": "content",
+                                                                            "type": "text",
+                                                                            "label": "Content"
+                                                                        },
+                                                                        {
+                                                                            "name": "refusal",
+                                                                            "type": "text",
+                                                                            "label": "Refusal"
+                                                                        }
+                                                                    ],
+                                                                    "type": "collection",
+                                                                    "label": "Message"
+                                                                }
+                                                            ],
+                                                            "type": "collection"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Choices"
+                                                    },
+                                                    {
+                                                        "name": "usage",
+                                                        "spec": [
+                                                            {
+                                                                "name": "prompt_tokens",
+                                                                "type": "number",
+                                                                "label": "Prompt Tokens"
+                                                            },
+                                                            {
+                                                                "name": "completion_tokens",
+                                                                "type": "text",
+                                                                "label": "Completion Tokens"
+                                                            },
+                                                            {
+                                                                "name": "total_tokens",
+                                                                "type": "number",
+                                                                "label": "Total Tokens"
+                                                            },
+                                                            {
+                                                                "name": "prompt_tokens_details",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "cached_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Cached Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "text_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Text Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "image_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Image Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "audio_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Audio Tokens"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Prompt Tokens Details"
+                                                            },
+                                                            {
+                                                                "name": "completion_tokens_details",
+                                                                "spec": [
+                                                                    {
+                                                                        "name": "reasoning_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Reasoning Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "text_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Text Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "audio_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Audio Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "accepted_prediction_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Accepted Prediction Tokens"
+                                                                    },
+                                                                    {
+                                                                        "name": "rejected_prediction_tokens",
+                                                                        "type": "uinteger",
+                                                                        "label": "Rejected Prediction Tokens"
+                                                                    }
+                                                                ],
+                                                                "type": "collection",
+                                                                "label": "Completion Tokens Details"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Usage"
+                                                    },
+                                                    {
+                                                        "name": "system_fingerprint",
+                                                        "type": "text",
+                                                        "label": "System Fingerprint"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 15,
+                                            "module": "builtin:BasicRouter",
+                                            "version": 1,
+                                            "mapper": null,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 1350
+                                                }
+                                            },
+                                            "routes": [
+                                                {
+                                                    "flow": [
+                                                        {
+                                                            "id": 21,
+                                                            "module": "twilio:SendSMS",
+                                                            "version": 2,
+                                                            "filter": {
+                                                                "name": "",
+                                                                "conditions": [
+                                                                    [
+                                                                        {
+                                                                            "a": "{{2.`Seller Status`}}",
+                                                                            "o": "notexist"
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 1800,
+                                                                    "y": 1200,
+                                                                    "messages": [
+                                                                        {
+                                                                            "category": "setup",
+                                                                            "severity": "error",
+                                                                            "message": "Value must not be empty."
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 22,
+                                                            "module": "airtable:ActionUpdateRecords",
+                                                            "version": 3,
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2100,
+                                                                    "y": 1200
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "flow": [
+                                                        {
+                                                            "id": 23,
+                                                            "module": "twilio:SendSMS",
+                                                            "version": 2,
+                                                            "filter": {
+                                                                "name": "",
+                                                                "conditions": [
+                                                                    [
+                                                                        {
+                                                                            "a": "{{2.`Seller Status`}}",
+                                                                            "o": "notexist"
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                            },
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 1800,
+                                                                    "y": 1500,
+                                                                    "messages": [
+                                                                        {
+                                                                            "category": "setup",
+                                                                            "severity": "error",
+                                                                            "message": "Value must not be empty."
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 24,
+                                                            "module": "airtable:ActionUpdateRecords",
+                                                            "version": 3,
+                                                            "metadata": {
+                                                                "designer": {
+                                                                    "x": 2100,
+                                                                    "y": 1500
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 25,
+                            "module": "openai-gpt-3:CreateCompletion",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 4656486
+                            },
+                            "filter": {
+                                "name": "new",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`First Time Buyer`}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "model": "gpt-4-1106-preview",
+                                "top_p": "1",
+                                "select": "chat",
+                                "messages": [
+                                    {
+                                        "role": "system",
+                                        "content": "You're a helpful assistant with a very specific role. You will receive a message. The message is from a user responding to a message asking them if they're a first time home buyer. Your job is to classify their response. Your answer will be binary, if they indicate they are a first time home buyer, you will simpy respond 'yes' with no extra words or characters. If they say they are not a first time home buyer, you will respond 'no' with no extra words or characters. If your response is not one of those responses great harm will be done and you'll be shut off forever."
+                                    },
+                                    {
+                                        "role": "user",
+                                        "content": "{{1.body}}"
+                                    }
+                                ],
+                                "max_tokens": "0",
+                                "temperature": "1",
+                                "n_completions": "1",
+                                "response_format": "text"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 1950
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "stop": {
+                                            "mode": "chose"
+                                        },
+                                        "model": {
+                                            "mode": "chose",
+                                            "label": "gpt-4-1106-preview (system)"
+                                        },
+                                        "select": {
+                                            "label": "Create a Chat Completion (GPT and o1 models)"
+                                        },
+                                        "messages": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "Developer / System"
+                                                    }
+                                                },
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "User"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "logit_bias": {
+                                            "mode": "chose"
+                                        },
+                                        "response_format": {
+                                            "mode": "chose",
+                                            "label": "Text"
+                                        },
+                                        "additionalParameters": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "openai-gpt-3"
+                                            },
+                                            "label": "My OpenAI connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:openai-gpt-3",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Select Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "chat",
+                                                "prompt"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "temperature",
+                                        "type": "number",
+                                        "label": "Temperature",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "top_p",
+                                        "type": "number",
+                                        "label": "Top P",
+                                        "validate": {
+                                            "max": 1,
+                                            "min": 0
+                                        }
+                                    },
+                                    {
+                                        "name": "n_completions",
+                                        "type": "number",
+                                        "label": "Number"
+                                    },
+                                    {
+                                        "name": "frequency_penalty",
+                                        "type": "number",
+                                        "label": "Frequency Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "presence_penalty",
+                                        "type": "number",
+                                        "label": "Presence Penalty",
+                                        "validate": {
+                                            "max": 2,
+                                            "min": -2
+                                        }
+                                    },
+                                    {
+                                        "name": "logit_bias",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "token",
+                                                    "type": "text",
+                                                    "label": "Token ID",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "probability",
+                                                    "type": "number",
+                                                    "label": "Probability",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "max": 100,
+                                                        "min": -100
+                                                    }
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Token Probability"
+                                        },
+                                        "type": "array",
+                                        "label": "Token Probability"
+                                    },
+                                    {
+                                        "name": "seed",
+                                        "type": "integer",
+                                        "label": "Seed"
+                                    },
+                                    {
+                                        "name": "stop",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text",
+                                            "label": "Stop Sequence"
+                                        },
+                                        "type": "array",
+                                        "label": "Stop Sequences",
+                                        "validate": {
+                                            "maxItems": 4
+                                        }
+                                    },
+                                    {
+                                        "name": "additionalParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "key",
+                                                    "type": "text",
+                                                    "label": "Parameter Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "type",
+                                                    "type": "select",
+                                                    "label": "Input Type",
+                                                    "options": [
+                                                        {
+                                                            "label": "Text",
+                                                            "value": "text",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ],
+                                                            "default": true
+                                                        },
+                                                        {
+                                                            "label": "Number",
+                                                            "value": "number",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "number",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Boolean",
+                                                            "value": "boolean",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "boolean",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Date",
+                                                            "value": "date",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "date",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "label": "Any",
+                                                            "value": "any",
+                                                            "nested": [
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "any",
+                                                                    "label": "Parameter Value"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Input Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Other Input Parameters"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "max_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Completion Tokens"
+                                    },
+                                    {
+                                        "name": "messages",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "role",
+                                                    "type": "select",
+                                                    "label": "Role",
+                                                    "options": {
+                                                        "store": [
+                                                            {
+                                                                "label": "Developer / System",
+                                                                "value": "system",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "User",
+                                                                "value": "user",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Assistant",
+                                                                "value": "assistant",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                                        "name": "content",
+                                                                        "type": "text",
+                                                                        "label": "Text Content"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "required": true
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Message"
+                                        },
+                                        "type": "array",
+                                        "label": "Messages",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "response_format",
+                                        "type": "select",
+                                        "label": "Response Format",
+                                        "validate": {
+                                            "enum": [
+                                                "text",
+                                                "json_object"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "result",
+                                        "type": "any",
+                                        "label": "Result"
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "object",
+                                        "type": "text",
+                                        "label": "Object"
+                                    },
+                                    {
+                                        "name": "created",
+                                        "type": "date",
+                                        "label": "Created"
+                                    },
+                                    {
+                                        "name": "model",
+                                        "type": "text",
+                                        "label": "Model"
+                                    },
+                                    {
+                                        "name": "choices",
+                                        "spec": {
+                                            "spec": [
+                                                {
+                                                    "name": "text",
+                                                    "type": "text",
+                                                    "label": "Text"
+                                                },
+                                                {
+                                                    "name": "index",
+                                                    "type": "number",
+                                                    "label": "Index"
+                                                },
+                                                {
+                                                    "name": "logprobs",
+                                                    "type": "text",
+                                                    "label": "Log Probs"
+                                                },
+                                                {
+                                                    "name": "finish_reason",
+                                                    "type": "text",
+                                                    "label": "Finish Reason"
+                                                },
+                                                {
+                                                    "name": "message",
+                                                    "spec": [
+                                                        {
+                                                            "name": "role",
+                                                            "type": "text",
+                                                            "label": "Role"
+                                                        },
+                                                        {
+                                                            "name": "content",
+                                                            "type": "text",
+                                                            "label": "Content"
+                                                        },
+                                                        {
+                                                            "name": "refusal",
+                                                            "type": "text",
+                                                            "label": "Refusal"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Message"
+                                                }
+                                            ],
+                                            "type": "collection"
+                                        },
+                                        "type": "array",
+                                        "label": "Choices"
+                                    },
+                                    {
+                                        "name": "usage",
+                                        "spec": [
+                                            {
+                                                "name": "prompt_tokens",
+                                                "type": "number",
+                                                "label": "Prompt Tokens"
+                                            },
+                                            {
+                                                "name": "completion_tokens",
+                                                "type": "text",
+                                                "label": "Completion Tokens"
+                                            },
+                                            {
+                                                "name": "total_tokens",
+                                                "type": "number",
+                                                "label": "Total Tokens"
+                                            },
+                                            {
+                                                "name": "prompt_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "cached_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Cached Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "image_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Image Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Prompt Tokens Details"
+                                            },
+                                            {
+                                                "name": "completion_tokens_details",
+                                                "spec": [
+                                                    {
+                                                        "name": "reasoning_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Reasoning Tokens"
+                                                    },
+                                                    {
+                                                        "name": "text_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Text Tokens"
+                                                    },
+                                                    {
+                                                        "name": "audio_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Audio Tokens"
+                                                    },
+                                                    {
+                                                        "name": "accepted_prediction_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Accepted Prediction Tokens"
+                                                    },
+                                                    {
+                                                        "name": "rejected_prediction_tokens",
+                                                        "type": "uinteger",
+                                                        "label": "Rejected Prediction Tokens"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Completion Tokens Details"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Usage"
+                                    },
+                                    {
+                                        "name": "system_fingerprint",
+                                        "type": "text",
+                                        "label": "System Fingerprint"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 29,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 1950
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 32,
+                                            "module": "twilio:SendSMS",
+                                            "version": 2,
+                                            "filter": {
+                                                "name": "",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`Seller Status`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 1800,
+                                                    "messages": [
+                                                        {
+                                                            "category": "setup",
+                                                            "severity": "error",
+                                                            "message": "Value must not be empty."
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "id": 33,
+                                            "module": "airtable:ActionUpdateRecords",
+                                            "version": 3,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1800,
+                                                    "y": 1800
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 30,
+                                            "module": "twilio:SendSMS",
+                                            "version": 2,
+                                            "filter": {
+                                                "name": "",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`Seller Status`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 2100,
+                                                    "messages": [
+                                                        {
+                                                            "category": "setup",
+                                                            "severity": "error",
+                                                            "message": "Value must not be empty."
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "id": 31,
+                                            "module": "airtable:ActionUpdateRecords",
+                                            "version": 3,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1800,
+                                                    "y": 2100
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 7,
+                            "module": "builtin:BasicRouter",
+                            "version": 1,
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{2.`__IMTLENGTH__`}}",
+                                            "b": "0",
+                                            "o": "number:greater"
+                                        },
+                                        {
+                                            "a": "{{2.`Buyer/Seller`}}",
+                                            "b": "Seller",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 2550
+                                }
+                            },
+                            "routes": [
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 8,
+                                            "module": "twilio:SendSMS",
+                                            "version": 2,
+                                            "filter": {
+                                                "name": "",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`Seller Status`}}",
+                                                            "o": "notexist"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 2400,
+                                                    "messages": [
+                                                        {
+                                                            "category": "setup",
+                                                            "severity": "error",
+                                                            "message": "Value must not be empty."
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "id": 10,
+                                            "module": "airtable:ActionUpdateRecords",
+                                            "version": 3,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 2400
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "flow": [
+                                        {
+                                            "id": 9,
+                                            "module": "twilio:SendSMS",
+                                            "version": 2,
+                                            "filter": {
+                                                "name": "",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{2.`Seller Status`}}",
+                                                            "b": "first time",
+                                                            "o": "text:contain:ci"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1200,
+                                                    "y": 2700
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "id": 11,
+                                            "module": "airtable:ActionUpdateRecords",
+                                            "version": 3,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1500,
+                                                    "y": 2700
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

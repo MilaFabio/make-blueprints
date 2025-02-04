@@ -1,0 +1,712 @@
+{
+    "name": "SLB Email Discovery",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-sheets:watchRows",
+            "version": 2,
+            "parameters": {
+                "from": "drive",
+                "mode": "select",
+                "limit": 90,
+                "sheetId": "Sheet1",
+                "__IMTCONN__": 3032133,
+                "spreadsheetId": "/1hI9WwMO0EOx-RFpCLHdvwi3t9YnFnhzBCTbEydmJlfA",
+                "tableFirstRow": "A1:Z1",
+                "includesHeaders": true,
+                "valueRenderOption": "FORMATTED_VALUE",
+                "dateTimeRenderOption": "FORMATTED_STRING"
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "mode": {
+                            "label": "Search by path"
+                        },
+                        "sheetId": {
+                            "label": "Sheet1"
+                        },
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (ryankachf@gmail.com)"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "SLB Email Automation"
+                            ]
+                        },
+                        "includesHeaders": {
+                            "label": "Yes"
+                        },
+                        "valueRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted value"
+                        },
+                        "dateTimeRenderOption": {
+                            "mode": "chose",
+                            "label": "Formatted string"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Search Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "valueRenderOption",
+                        "type": "select",
+                        "label": "Value render option",
+                        "validate": {
+                            "enum": [
+                                "FORMATTED_VALUE",
+                                "UNFORMATTED_VALUE",
+                                "FORMULA"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "dateTimeRenderOption",
+                        "type": "select",
+                        "label": "Date and time render option",
+                        "validate": {
+                            "enum": [
+                                "SERIAL_NUMBER",
+                                "FORMATTED_STRING"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "tableFirstRow",
+                        "type": "text",
+                        "label": "Row with headers",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__ROW_NUMBER__",
+                        "type": "number",
+                        "label": "Row number"
+                    },
+                    {
+                        "name": "__SPREADSHEET_ID__",
+                        "type": "text",
+                        "label": "Spreadsheet ID"
+                    },
+                    {
+                        "name": "__SHEET__",
+                        "type": "text",
+                        "label": "Sheet"
+                    },
+                    {
+                        "name": "0",
+                        "type": "text",
+                        "label": "Name  (A)"
+                    },
+                    {
+                        "name": "1",
+                        "type": "text",
+                        "label": "Title (B)"
+                    },
+                    {
+                        "name": "2",
+                        "type": "text",
+                        "label": "First Name  (C)"
+                    },
+                    {
+                        "name": "3",
+                        "type": "text",
+                        "label": "Last_Name (D)"
+                    },
+                    {
+                        "name": "4",
+                        "type": "text",
+                        "label": "Email (E)"
+                    },
+                    {
+                        "name": "5",
+                        "type": "text",
+                        "label": "Sent Yes or No (F)"
+                    },
+                    {
+                        "name": "6",
+                        "type": "text",
+                        "label": "Trophy HTML (G)"
+                    },
+                    {
+                        "name": "7",
+                        "type": "text",
+                        "label": "Playoff HTML  (H)"
+                    },
+                    {
+                        "name": "8",
+                        "type": "text",
+                        "label": "Cup HTML  (I)"
+                    },
+                    {
+                        "name": "9",
+                        "type": "text",
+                        "label": "(J)"
+                    },
+                    {
+                        "name": "10",
+                        "type": "text",
+                        "label": "(K)"
+                    },
+                    {
+                        "name": "11",
+                        "type": "text",
+                        "label": "(L)"
+                    },
+                    {
+                        "name": "12",
+                        "type": "text",
+                        "label": "(M)"
+                    },
+                    {
+                        "name": "13",
+                        "type": "text",
+                        "label": "(N)"
+                    },
+                    {
+                        "name": "14",
+                        "type": "text",
+                        "label": "(O)"
+                    },
+                    {
+                        "name": "15",
+                        "type": "text",
+                        "label": "(P)"
+                    },
+                    {
+                        "name": "16",
+                        "type": "text",
+                        "label": "(Q)"
+                    },
+                    {
+                        "name": "17",
+                        "type": "text",
+                        "label": "(R)"
+                    },
+                    {
+                        "name": "18",
+                        "type": "text",
+                        "label": "(S)"
+                    },
+                    {
+                        "name": "19",
+                        "type": "text",
+                        "label": "(T)"
+                    },
+                    {
+                        "name": "20",
+                        "type": "text",
+                        "label": "(U)"
+                    },
+                    {
+                        "name": "21",
+                        "type": "text",
+                        "label": "(V)"
+                    },
+                    {
+                        "name": "22",
+                        "type": "text",
+                        "label": "(W)"
+                    },
+                    {
+                        "name": "23",
+                        "type": "text",
+                        "label": "(X)"
+                    },
+                    {
+                        "name": "24",
+                        "type": "text",
+                        "label": "(Y)"
+                    },
+                    {
+                        "name": "25",
+                        "type": "text",
+                        "label": "(Z)"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 18,
+            "module": "google-drive:getAFile",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4131111
+            },
+            "mapper": {
+                "file": "/1ke8F0bF0lNBzd81nzSGJZALCS7AwB7gn",
+                "select": "value",
+                "destination": "drive",
+                "formatDrawings": "image/jpeg",
+                "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "formatSpreadsheets": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 298,
+                    "y": -5
+                },
+                "restore": {
+                    "expect": {
+                        "file": {
+                            "path": [
+                                "Playoff 2025 Groups Letter.pdf"
+                            ]
+                        },
+                        "select": {
+                            "label": "Select from the list"
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        },
+                        "formatDrawings": {
+                            "label": "JPEG"
+                        },
+                        "formatDocuments": {
+                            "label": "MS Word Document"
+                        },
+                        "formatSpreadsheets": {
+                            "label": "MS Excel"
+                        },
+                        "formatPresentations": {
+                            "label": "MS PowerPoint"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a File ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "value"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDocuments",
+                        "type": "select",
+                        "label": "Convert Google Documents Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "application/pdf",
+                                "application/vnd.oasis.opendocument.text",
+                                "text/html",
+                                "text/plain",
+                                "application/rtf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatSpreadsheets",
+                        "type": "select",
+                        "label": "Convert Google Spreadsheets Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "application/x-vnd.oasis.opendocument.spreadsheet",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatPresentations",
+                        "type": "select",
+                        "label": "Convert Google Slides Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDrawings",
+                        "type": "select",
+                        "label": "Convert Google Drawings Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "image/jpeg",
+                                "image/png",
+                                "image/svg+xml",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "file",
+                        "type": "file",
+                        "label": "File ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 20,
+            "module": "microsoft-email:createAMessage",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 3032121
+            },
+            "mapper": {
+                "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Email</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            margin: 0;\n            padding: 20px;\n            font-size: 13px; /* Increased font size for the main body */\n        }\n        .signature {\n            margin-top: 20px;\n        }\n        .signature img {\n            width: 150px; /* Adjust size as needed */\n            height: auto;\n        }\n        .confidential {\n            font-size: 10px; /* Increased font size for confidentiality and company info */\n            color: #555;\n        }\n        .title {\n            font-weight: bold;\n            font-style: italic; /* Bold and italic for the title */\n            font-size: 13px; /* Title size */\n        }\n        h4 {\n            font-size: 14px;\n            font-weight: bold;\n            margin-bottom: 10px;\n        }\n    </style>\n</head>\n<body>\n    <p>Hi {{1.`1`}} {{1.`2`}} {{1.`3`}},</p>\n    <p>I am delighted to provide information on the great offers we have available for Group Bookings for the 2025 Basketball Playoff Finals, which are to be held on Sunday 18th May 2025 at The O2, London.</p>\n    \n    <h4>ABOUT THE EVENT</h4>\n    <p>By reserving group tickets for the Basketball Playoff Finals, you will get the chance to experience the thrill of the two top teams from the men’s and women’s British Basketball Leagues as they battle it out in this season-ending showdown for the last pieces of silverware on offer during the 2024-25 season for what are two of the most prestigious and special trophies on offer in the sport.</p>\n    <p>As well as the showpiece games, you will be treated to a magical menu of courtside entertainment including MC’s, music, dancers, and much more. Make sure you get closer to the action and reserve your tickets for a day you will never forget.</p>\n\n    <h4>THE GROUP OFFER</h4>\n    <p>We offer incentives for group bookings, including a specially tailored provisional booking process and complimentary adult tickets so that organisers can attend for free – whilst also have available a sample Risk Assessment to help with the planning of your trip.</p>\n    <p>For further information on the event, including our FAQ section for groups, and the great offers visit <a href=\"https://www.superleaguebasketballm.co.uk/2025playoffgroups/\">https://www.superleaguebasketballm.co.uk/2025playoffgroups/</a>.</p>\n\n    <h4>PROVISIONALLY BOOK TICKETS (with no commitment)</h4>\n    <p>If the event is of interest, we would encourage you to make a provisional booking asap (even if you’re not 100% sure you would like to attend) – our Events are very popular, particularly with schools and basketball clubs, and we normally sell out!</p>\n    <p>We try to make the process of booking tickets for Groups as straightforward as possible – and have a provisional booking process so you can plan your trip safe in the knowledge that your tickets are secure (without you having to commit to them just yet).</p>\n    <p>The various options for how you can provisionally book are available via <a href=\"https://www.superleaguebasketballm.co.uk/2025playoffgroups\">www.superleaguebasketball.co.uk/2025playoffgroups</a>.</p>\n    <p>For further information on the event or to make a provisional booking, please feel free to contact us on 0203 7500633 or email <a href=\"mailto:ryan@superleaguebasketball.co.uk\">ryan@superleaguebasketball.co.uk</a> and I will gladly guide you through the process.</p>\n\n    <p>I do hope you will be able to join us.</p>\n    \n    <div class=\"signature\">\n        <p>Kind Regards,</p>\n        <p>Ryan Kachchakaduge</p>\n        <p class=\"title\">Event Marketing Officer</p>\n        <p>Tel: 020 3750 0633</p>\n        <p>Email: <a href=\"mailto:ryan@superleaguebasketball.co.uk\">ryan@superleaguebasketball.co.uk</a></p>\n        <img src=\"https://imgur.com/0El98mq.jpg\" alt=\"Super League Basketball Logo\">\n        <p class=\"confidential\">CONFIDENTIALITY: The information in this e-mail and any attachments is confidential and intended only for the named recipient(s). The e-mail may not be disclosed or used by any person other than the addressee, nor may it be copied in any way. If you are not a named recipient, please notify the sender immediately and delete any copies of this message.</p>\n        <p class=\"confidential\">Super League Basketball Ltd is a registered company in England and Wales.</p>\n        <p class=\"confidential\">Company Number: 15809301 | VAT Number: 472707283</p>\n        <p class=\"confidential\">Registered Company Address: Unit D17, Leicester Business Centre, 111 Ross Walk, Leicester, LE45HH</p>\n    </div>\n</body>\n</html>\n",
+                "subject": "SUPER LEAGUE BASKETBALL- FOR {{upper(1.`1`)}} {{upper(1.`2`)}} {{upper(1.`3`)}} - PLAY-OFF FINAL 2025 - GROUP BOOKING OFFER!",
+                "attachments": [
+                    {
+                        "data": "{{18.data}}",
+                        "filename": "{{18.name}}"
+                    }
+                ],
+                "contentType": "html",
+                "toRecipients": [
+                    {
+                        "address": "{{1.`4`}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 589,
+                    "y": -18
+                },
+                "restore": {
+                    "expect": {
+                        "replyTo": {
+                            "mode": "chose"
+                        },
+                        "importance": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "attachments": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "contentType": {
+                            "mode": "chose",
+                            "label": "HTML"
+                        },
+                        "ccRecipients": {
+                            "mode": "chose"
+                        },
+                        "toRecipients": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bccRecipients": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "azure"
+                            },
+                            "label": "My Microsoft connection (Ryan Kachchakaduge)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:azure",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject",
+                        "required": true
+                    },
+                    {
+                        "name": "contentType",
+                        "type": "select",
+                        "label": "Body Content Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "html",
+                                "text"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "content",
+                        "type": "text",
+                        "label": "Body Content",
+                        "required": true
+                    },
+                    {
+                        "name": "importance",
+                        "type": "select",
+                        "label": "Importance",
+                        "validate": {
+                            "enum": [
+                                "Low",
+                                "Normal",
+                                "High"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "toRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "To Recipients"
+                    },
+                    {
+                        "name": "ccRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "CC Recipients"
+                    },
+                    {
+                        "name": "bccRecipients",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Bcc Recipients"
+                    },
+                    {
+                        "name": "replyTo",
+                        "spec": [
+                            {
+                                "name": "address",
+                                "type": "email",
+                                "label": "Email Address",
+                                "required": true
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Reply To"
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": [
+                            {
+                                "name": "filename",
+                                "type": "filename",
+                                "label": "File Name",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attachments"
+                    }
+                ]
+            },
+            "onerror": [
+                {
+                    "id": 22,
+                    "module": "builtin:Ignore",
+                    "version": 1,
+                    "filter": {
+                        "name": "Catch all",
+                        "conditions": []
+                    },
+                    "metadata": {
+                        "designer": {
+                            "x": 889,
+                            "y": -18
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

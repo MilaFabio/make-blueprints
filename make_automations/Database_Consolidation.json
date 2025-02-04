@@ -1,0 +1,3296 @@
+{
+    "name": "Data Centralization",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-drive:getAFile",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4131111
+            },
+            "mapper": {
+                "file": "1xeqn4XacSYZtJg78U6vD0PxzQzAM83bsB63Gv4PCnVw",
+                "select": "map",
+                "formatDrawings": "image/jpeg",
+                "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "formatSpreadsheets": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -3851,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "select": {
+                            "label": "Enter manually"
+                        },
+                        "formatDrawings": {
+                            "label": "JPEG"
+                        },
+                        "formatDocuments": {
+                            "label": "MS Word Document"
+                        },
+                        "formatSpreadsheets": {
+                            "label": "MS Excel"
+                        },
+                        "formatPresentations": {
+                            "label": "MS PowerPoint"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a File ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "value"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDocuments",
+                        "type": "select",
+                        "label": "Convert Google Documents Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "application/pdf",
+                                "application/vnd.oasis.opendocument.text",
+                                "text/html",
+                                "text/plain",
+                                "application/rtf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatSpreadsheets",
+                        "type": "select",
+                        "label": "Convert Google Spreadsheets Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "application/x-vnd.oasis.opendocument.spreadsheet",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatPresentations",
+                        "type": "select",
+                        "label": "Convert Google Slides Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDrawings",
+                        "type": "select",
+                        "label": "Convert Google Drawings Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "image/jpeg",
+                                "image/png",
+                                "image/svg+xml",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "file",
+                        "type": "text",
+                        "label": "File ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "google-drive:makeApiCall",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4131111
+            },
+            "mapper": {
+                "url": "v3/files/{{1.id}}/export?mimeType=text/csv",
+                "method": "GET",
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": -3551,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "qs": {
+                            "mode": "chose"
+                        },
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "url",
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "qs",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Query String"
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "csv:ParseCSV",
+            "version": 1,
+            "parameters": {
+                "relax": false,
+                "colCount": null,
+                "delimiter": ",",
+                "delimiterType": "other",
+                "csvContainsHeaders": false
+            },
+            "mapper": {
+                "csv": "{{2.body}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -3251,
+                    "y": -106
+                },
+                "restore": {
+                    "parameters": {
+                        "delimiterType": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "colCount",
+                        "type": "number",
+                        "label": "Number of columns"
+                    },
+                    {
+                        "name": "csvContainsHeaders",
+                        "type": "boolean",
+                        "label": "CSV contains headers",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiterType",
+                        "type": "select",
+                        "label": "Delimiter",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                ",",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "relax",
+                        "type": "boolean",
+                        "label": "Preserve quotes inside unquoted field",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiter",
+                        "type": "text",
+                        "label": "Delimiter character",
+                        "required": true,
+                        "validate": {
+                            "max": 1,
+                            "min": 1
+                        }
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "csv",
+                        "type": "text",
+                        "label": "CSV",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 3
+            },
+            "mapper": {
+                "col1": "{{3.col1}}",
+                "col2": "{{3.col2}}",
+                "col3": "{{3.col3}}",
+                "col4": "{{3.col4}}",
+                "col5": "{{3.col5}}",
+                "col6": "{{3.col6}}",
+                "col7": "{{3.col7}}",
+                "col8": "{{3.col8}}",
+                "col9": "{{3.col9}}",
+                "col10": "{{3.col10}}",
+                "col11": "{{3.col11}}",
+                "col12": "{{3.col12}}",
+                "col13": "{{3.col13}}",
+                "col14": "{{3.col14}}",
+                "col15": "{{3.col15}}",
+                "col16": "{{3.col16}}",
+                "col17": "{{3.col17}}",
+                "col18": "{{3.col18}}",
+                "col19": "{{3.col19}}",
+                "col20": "{{3.col20}}",
+                "col21": "{{3.col21}}",
+                "col22": "{{3.col22}}",
+                "col23": "{{3.col23}}",
+                "col24": "{{3.col24}}",
+                "col25": "{{3.col25}}",
+                "col26": "{{3.col26}}",
+                "col27": "{{3.col27}}",
+                "col28": "{{3.col28}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -2951,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "CSV - Parse CSV [14]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                },
+                "advanced": true
+            },
+            "flags": {
+                "stopIfEmpty": true
+            }
+        },
+        {
+            "id": 5,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{toArray(first(4.array))}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -2651,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "util:TextAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 5,
+                "rowSeparator": "other",
+                "otherRowSeparator": " , "
+            },
+            "mapper": {
+                "value": "{{5.value}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -2351,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [75]"
+                        }
+                    },
+                    "parameters": {
+                        "rowSeparator": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "rowSeparator",
+                        "type": "select",
+                        "label": "Row separator",
+                        "validate": {
+                            "enum": [
+                                "\n",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "otherRowSeparator",
+                        "type": "text",
+                        "label": "Separator"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 7,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{4.array}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -2051,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 7
+            },
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{7.`__IMTINDEX__`}}",
+                            "b": "1",
+                            "o": "number:notequal"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "col1": "{{7.col1}}",
+                "col2": "{{7.col2}}",
+                "col3": "{{7.col3}}",
+                "col4": "{{7.col4}}",
+                "col5": "{{7.col5}}",
+                "col6": "{{7.col6}}",
+                "col7": "{{7.col7}}",
+                "col8": "{{7.col8}}",
+                "col9": "{{7.col9}}",
+                "col10": "{{7.col10}}",
+                "col11": "{{7.col11}}",
+                "col12": "{{7.col12}}",
+                "col13": "{{7.col13}}",
+                "col14": "{{7.col14}}",
+                "col15": "{{7.col15}}",
+                "col16": "{{7.col16}}",
+                "col17": "{{7.col17}}",
+                "col18": "{{7.col18}}",
+                "col19": "{{7.col19}}",
+                "col20": "{{7.col20}}",
+                "col21": "{{7.col21}}",
+                "col22": "{{7.col22}}",
+                "col23": "{{7.col23}}",
+                "col24": "{{7.col24}}",
+                "col25": "{{7.col25}}",
+                "col26": "{{7.col26}}",
+                "col27": "{{7.col27}}",
+                "col28": "{{7.col28}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1751,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [72]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 9,
+            "module": "google-drive:getAFile",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4131111
+            },
+            "mapper": {
+                "file": "1PmIJOS2ezjHjmiIlupW6XOh36dSIThAbaofT4rh6nf8",
+                "select": "map",
+                "formatDrawings": "image/jpeg",
+                "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "formatSpreadsheets": "application/x-vnd.oasis.opendocument.spreadsheet",
+                "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1451,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "select": {
+                            "label": "Enter manually"
+                        },
+                        "formatDrawings": {
+                            "label": "JPEG"
+                        },
+                        "formatDocuments": {
+                            "label": "MS Word Document"
+                        },
+                        "formatSpreadsheets": {
+                            "label": "Open Office Sheet"
+                        },
+                        "formatPresentations": {
+                            "label": "MS PowerPoint"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a File ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "value"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDocuments",
+                        "type": "select",
+                        "label": "Convert Google Documents Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "application/pdf",
+                                "application/vnd.oasis.opendocument.text",
+                                "text/html",
+                                "text/plain",
+                                "application/rtf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatSpreadsheets",
+                        "type": "select",
+                        "label": "Convert Google Spreadsheets Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "application/x-vnd.oasis.opendocument.spreadsheet",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatPresentations",
+                        "type": "select",
+                        "label": "Convert Google Slides Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "formatDrawings",
+                        "type": "select",
+                        "label": "Convert Google Drawings Files to Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "image/jpeg",
+                                "image/png",
+                                "image/svg+xml",
+                                "application/pdf"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "file",
+                        "type": "text",
+                        "label": "File ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "google-drive:makeApiCall",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 4131111
+            },
+            "mapper": {
+                "url": "v3/files/{{9.id}}/export?mimeType=text/csv",
+                "method": "GET",
+                "headers": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": -1151,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "qs": {
+                            "mode": "chose"
+                        },
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "type": "hidden"
+                    },
+                    {
+                        "name": "url",
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "PATCH",
+                                "DELETE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "qs",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key"
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Query String"
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "csv:ParseCSV",
+            "version": 1,
+            "parameters": {
+                "relax": false,
+                "colCount": null,
+                "delimiter": ",",
+                "delimiterType": "other",
+                "csvContainsHeaders": false
+            },
+            "mapper": {
+                "csv": "{{10.body}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -851,
+                    "y": -106
+                },
+                "restore": {
+                    "parameters": {
+                        "delimiterType": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "colCount",
+                        "type": "number",
+                        "label": "Number of columns"
+                    },
+                    {
+                        "name": "csvContainsHeaders",
+                        "type": "boolean",
+                        "label": "CSV contains headers",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiterType",
+                        "type": "select",
+                        "label": "Delimiter",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                ",",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "relax",
+                        "type": "boolean",
+                        "label": "Preserve quotes inside unquoted field",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiter",
+                        "type": "text",
+                        "label": "Delimiter character",
+                        "required": true,
+                        "validate": {
+                            "max": 1,
+                            "min": 1
+                        }
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "csv",
+                        "type": "text",
+                        "label": "CSV",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 11
+            },
+            "mapper": {
+                "col1": "{{11.col1}}",
+                "col2": "{{11.col2}}",
+                "col3": "{{11.col3}}",
+                "col4": "{{11.col4}}",
+                "col5": "{{11.col5}}",
+                "col6": "{{11.col6}}",
+                "col7": "{{11.col7}}",
+                "col8": "{{11.col8}}",
+                "col9": "{{11.col9}}",
+                "col10": "{{11.col10}}",
+                "col11": "{{11.col11}}",
+                "col12": "{{11.col12}}",
+                "col13": "{{11.col13}}",
+                "col14": "{{11.col14}}",
+                "col15": "{{11.col15}}",
+                "col16": "{{11.col16}}",
+                "col17": "{{11.col17}}",
+                "col18": "{{11.col18}}",
+                "col19": "{{11.col19}}",
+                "col20": "{{11.col20}}",
+                "col21": "{{11.col21}}",
+                "col22": "{{11.col22}}",
+                "col23": "{{11.col23}}",
+                "col24": "{{11.col24}}",
+                "col25": "{{11.col25}}",
+                "col26": "{{11.col26}}",
+                "col27": "{{11.col27}}",
+                "col28": "{{11.col28}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -551,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "CSV - Parse CSV [137]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 13,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{toArray(first(12.array))}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": -251,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 14,
+            "module": "util:TextAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 13,
+                "rowSeparator": "other",
+                "otherRowSeparator": " , "
+            },
+            "mapper": {
+                "value": "{{13.value}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 49,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [144]"
+                        }
+                    },
+                    "parameters": {
+                        "rowSeparator": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "rowSeparator",
+                        "type": "select",
+                        "label": "Row separator",
+                        "validate": {
+                            "enum": [
+                                "\n",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "otherRowSeparator",
+                        "type": "text",
+                        "label": "Separator"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 15,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{12.array}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 349,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 16,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 15
+            },
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{4.`__IMTINDEX__`}}",
+                            "b": "1",
+                            "o": "number:notequal"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "col1": "{{15.col1}}",
+                "col2": "{{15.col2}}",
+                "col3": "{{15.col3}}",
+                "col4": "{{15.col4}}",
+                "col5": "{{15.col5}}",
+                "col6": "{{15.col6}}",
+                "col7": "{{15.col7}}",
+                "col8": "{{15.col8}}",
+                "col9": "{{15.col9}}",
+                "col10": "{{15.col10}}",
+                "col11": "{{15.col11}}",
+                "col12": "{{15.col12}}",
+                "col13": "{{15.col13}}",
+                "col14": "{{15.col14}}",
+                "col15": "{{15.col15}}",
+                "col16": "{{15.col16}}",
+                "col17": "{{15.col17}}",
+                "col18": "{{15.col18}}",
+                "col19": "{{15.col19}}",
+                "col20": "{{15.col20}}",
+                "col21": "{{15.col21}}",
+                "col22": "{{15.col22}}",
+                "col23": "{{15.col23}}",
+                "col24": "{{15.col24}}",
+                "col25": "{{15.col25}}",
+                "col26": "{{15.col26}}",
+                "col27": "{{15.col27}}",
+                "col28": "{{15.col28}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 649,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [139]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 17,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{toArray(first(16.array))}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 949,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 18,
+            "module": "util:TextAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 17,
+                "rowSeparator": "other",
+                "otherRowSeparator": " , "
+            },
+            "mapper": {
+                "value": "{{17.value}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1249,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [141]"
+                        }
+                    },
+                    "parameters": {
+                        "rowSeparator": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "rowSeparator",
+                        "type": "select",
+                        "label": "Row separator",
+                        "validate": {
+                            "enum": [
+                                "\n",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "otherRowSeparator",
+                        "type": "text",
+                        "label": "Separator"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 19,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "csv_keys_array",
+                        "value": "{{1.text}}"
+                    },
+                    {
+                        "name": "master_header",
+                        "value": "{{3.text}}"
+                    },
+                    {
+                        "name": "csv_values_array",
+                        "value": "{{first(8.array)}}"
+                    },
+                    {
+                        "name": "master_header_examples",
+                        "value": "{{18.text}}"
+                    },
+                    {
+                        "name": "col_array",
+                        "value": "{{join(keys(first(4.array)); \" , \")}}"
+                    },
+                    {
+                        "name": "master_header_check",
+                        "value": "{{first(12.array)}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1549,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        },
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "csv_keys_array",
+                        "type": "any",
+                        "label": "csv_keys_array"
+                    },
+                    {
+                        "name": "master_header",
+                        "type": "any",
+                        "label": "master_header"
+                    },
+                    {
+                        "name": "csv_values_array",
+                        "type": "any",
+                        "label": "csv_values_array"
+                    },
+                    {
+                        "name": "master_header_examples",
+                        "type": "any",
+                        "label": "master_header_examples"
+                    },
+                    {
+                        "name": "col_array",
+                        "type": "any",
+                        "label": "col_array"
+                    },
+                    {
+                        "name": "master_header_check",
+                        "type": "any",
+                        "label": "master_header_check"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 20,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{toArray(19.csv_values_array)}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1849,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 21,
+            "module": "util:TextAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 20,
+                "rowSeparator": "other",
+                "otherRowSeparator": " , "
+            },
+            "mapper": {
+                "value": "{{20.value[]}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2149,
+                    "y": -106
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [48]"
+                        }
+                    },
+                    "flags": {
+                        "stopIfEmpty": {
+                            "collapsed": true
+                        }
+                    },
+                    "parameters": {
+                        "rowSeparator": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "rowSeparator",
+                        "type": "select",
+                        "label": "Row separator",
+                        "validate": {
+                            "enum": [
+                                "\n",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "otherRowSeparator",
+                        "type": "text",
+                        "label": "Separator"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 22,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 4656486
+            },
+            "mapper": {
+                "model": "gpt-4o-mini",
+                "top_p": "1",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are an expert data integrator. Your primary goal is to map CSV headers to their corresponding master sheet headers.\n\n- Always return your final answer as a valid JSON object. \n- If a particular CSV header does not match any master sheet header, map it to \"null\".\n- Be concise and clear in your reasoning.\n​"
+                    },
+                    {
+                        "role": "user",
+                        "content": "**Context**:\n1) CSV Headers name: {{19.col_array}}\n2) CSV Data set 1 (in the same order as the headers) :{{19.csv_keys_array}}\n3) CSV Data set 2 (in the same order as the headers): {{21.text}}\n4) Master Sheet Headers: {{19.master_header}}\n5) Master Sheet Example Data (in the same order): {{19.master_header_examples}}\n\n**Task**:\n1. Analyze the CSV headers and data set 1 and 2 to deduce what each column represents.\n2. Analyze the master sheet headers and their example data to understand what each column in the master sheet represents.\n3. Map each CSV header to the most relevant master sheet header. If no match is found, map it to \"null\".\n4. Each CSV Header should only occur once as it can only match one Master Sheet header. \n\n**Expected Output**:\nA JSON object with the CSV headers as keys and the matched master sheet headers (or \"null\") as values. For example:\n\n```json\n{\n  \"csv_header_1\": \"matching_master_header\",\n  \"csv_header_2\": \"null\",\n  \"...\": \"...\"\n}\n",
+                        "imageDetail": "auto"
+                    }
+                ],
+                "max_tokens": "2048",
+                "temperature": "0.2",
+                "n_completions": "1",
+                "response_format": "json_object",
+                "parseJSONResponse": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2449,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4o-mini (system)"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT and o1 models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "Developer / System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    },
+                                    "imageDetail": {
+                                        "mode": "chose",
+                                        "label": "Auto"
+                                    },
+                                    "imageInputType": {
+                                        "mode": "chose",
+                                        "label": "Empty"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "JSON Object"
+                        },
+                        "parseJSONResponse": {
+                            "mode": "chose"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "token",
+                                    "type": "text",
+                                    "label": "Token ID",
+                                    "required": true
+                                },
+                                {
+                                    "name": "probability",
+                                    "type": "number",
+                                    "label": "Probability",
+                                    "required": true,
+                                    "validate": {
+                                        "max": 100,
+                                        "min": -100
+                                    }
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Token Probability"
+                        },
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text",
+                            "label": "Stop Sequence"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Parameter Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "type",
+                                    "type": "select",
+                                    "label": "Input Type",
+                                    "options": [
+                                        {
+                                            "label": "Text",
+                                            "value": "text",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ],
+                                            "default": true
+                                        },
+                                        {
+                                            "label": "Number",
+                                            "value": "number",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "number",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Boolean",
+                                            "value": "boolean",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Date",
+                                            "value": "date",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "date",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "label": "Any",
+                                            "value": "any",
+                                            "nested": [
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Parameter Value"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Input Parameter"
+                        },
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "uinteger",
+                        "label": "Max Completion Tokens"
+                    },
+                    {
+                        "name": "messages",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": {
+                                        "store": [
+                                            {
+                                                "label": "Developer / System",
+                                                "value": "system",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "User",
+                                                "value": "user",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    },
+                                                    {
+                                                        "name": "imageInputType",
+                                                        "type": "select",
+                                                        "label": "Image Input Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "URL",
+                                                                "value": "url",
+                                                                "nested": [
+                                                                    {
+                                                                        "help": "Make sure to use a publicly accessible URL.\nYou can test if your image is publicly accessible by opening the link in an incognito tab.",
+                                                                        "name": "imageUrl",
+                                                                        "type": "url",
+                                                                        "label": "Image URL"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Image File",
+                                                                "value": "file",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "imageFile",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                                                                "name": "imageFilename",
+                                                                                "type": "filename",
+                                                                                "label": "Image Filename",
+                                                                                "semantic": "file:name",
+                                                                                "extension": [
+                                                                                    "jpg",
+                                                                                    "jpeg",
+                                                                                    "png",
+                                                                                    "webp",
+                                                                                    "gif"
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "name": "imageData",
+                                                                                "type": "buffer",
+                                                                                "label": "Image Data",
+                                                                                "semantic": "file:data"
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Image"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "mappable": false
+                                                    },
+                                                    {
+                                                        "name": "imageDetail",
+                                                        "type": "select",
+                                                        "label": "Image Detail",
+                                                        "options": [
+                                                            {
+                                                                "label": "Auto",
+                                                                "value": "auto",
+                                                                "default": true
+                                                            },
+                                                            {
+                                                                "label": "High",
+                                                                "value": "high"
+                                                            },
+                                                            {
+                                                                "label": "Low",
+                                                                "value": "low"
+                                                            }
+                                                        ],
+                                                        "advanced": true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "Assistant",
+                                                "value": "assistant",
+                                                "nested": [
+                                                    {
+                                                        "help": "Text content of the message on behalf of the selected __Role__.",
+                                                        "name": "content",
+                                                        "type": "text",
+                                                        "label": "Text Content"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "required": true
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Message"
+                        },
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseJSONResponse",
+                        "type": "boolean",
+                        "label": "Parse JSON Response",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "result",
+                        "type": "any",
+                        "label": "Result"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "object",
+                        "type": "text",
+                        "label": "Object"
+                    },
+                    {
+                        "name": "created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "model",
+                        "type": "text",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "choices",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "text",
+                                    "type": "text",
+                                    "label": "Text"
+                                },
+                                {
+                                    "name": "index",
+                                    "type": "number",
+                                    "label": "Index"
+                                },
+                                {
+                                    "name": "logprobs",
+                                    "type": "text",
+                                    "label": "Log Probs"
+                                },
+                                {
+                                    "name": "finish_reason",
+                                    "type": "text",
+                                    "label": "Finish Reason"
+                                },
+                                {
+                                    "name": "message",
+                                    "spec": [
+                                        {
+                                            "name": "role",
+                                            "type": "text",
+                                            "label": "Role"
+                                        },
+                                        {
+                                            "name": "content",
+                                            "type": "text",
+                                            "label": "Content"
+                                        },
+                                        {
+                                            "name": "refusal",
+                                            "type": "text",
+                                            "label": "Refusal"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Message"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "Choices"
+                    },
+                    {
+                        "name": "usage",
+                        "spec": [
+                            {
+                                "name": "prompt_tokens",
+                                "type": "number",
+                                "label": "Prompt Tokens"
+                            },
+                            {
+                                "name": "completion_tokens",
+                                "type": "text",
+                                "label": "Completion Tokens"
+                            },
+                            {
+                                "name": "total_tokens",
+                                "type": "number",
+                                "label": "Total Tokens"
+                            },
+                            {
+                                "name": "prompt_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "cached_tokens",
+                                        "type": "uinteger",
+                                        "label": "Cached Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "image_tokens",
+                                        "type": "uinteger",
+                                        "label": "Image Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Prompt Tokens Details"
+                            },
+                            {
+                                "name": "completion_tokens_details",
+                                "spec": [
+                                    {
+                                        "name": "reasoning_tokens",
+                                        "type": "uinteger",
+                                        "label": "Reasoning Tokens"
+                                    },
+                                    {
+                                        "name": "text_tokens",
+                                        "type": "uinteger",
+                                        "label": "Text Tokens"
+                                    },
+                                    {
+                                        "name": "audio_tokens",
+                                        "type": "uinteger",
+                                        "label": "Audio Tokens"
+                                    },
+                                    {
+                                        "name": "accepted_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Accepted Prediction Tokens"
+                                    },
+                                    {
+                                        "name": "rejected_prediction_tokens",
+                                        "type": "uinteger",
+                                        "label": "Rejected Prediction Tokens"
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Completion Tokens Details"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Usage"
+                    },
+                    {
+                        "name": "system_fingerprint",
+                        "type": "text",
+                        "label": "System Fingerprint"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 23,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "{{19.master_header_check.col1}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col1)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col1)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col2}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col2)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col2)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col3}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col3)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col3)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col4}}__key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col4)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col4)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col5}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col5)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col5)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col6}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col6)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col6)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col7}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col7)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col7)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col8}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col8)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col8)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col9}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col9)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col9)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col10}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col10)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col10)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col11}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col11)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col11)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col12}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col12)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col12)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col13}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col13)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col13)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col14}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col14)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col14)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col15}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col15)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col15)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col16}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col16)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col16)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col17}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col17)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col17)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col18}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col18)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col18)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col19}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col19)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col19)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col20}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col20)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col20)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col21}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col21)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col21)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col22}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col22)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col22)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col23}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col23)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col23)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col24}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col24)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col24)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col25}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col25)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col25)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col26}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col26)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col26)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col27}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col27)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col27)))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col28}}_key",
+                        "value": "{{if(length(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col28)) = 0; \"empty\"; first(map(toArray(22.result); \"key\"; \"value\"; 19.master_header_check.col28)))}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2749,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        },
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "REF_key",
+                        "type": "any",
+                        "label": "REF_key"
+                    },
+                    {
+                        "name": "TARGET_key",
+                        "type": "any",
+                        "label": "TARGET_key"
+                    },
+                    {
+                        "name": "HOW_key",
+                        "type": "any",
+                        "label": "HOW_key"
+                    },
+                    {
+                        "name": "DATE__key",
+                        "type": "any",
+                        "label": "DATE__key"
+                    },
+                    {
+                        "name": "SCHOOL_key",
+                        "type": "any",
+                        "label": "SCHOOL_key"
+                    },
+                    {
+                        "name": "FIRST NAME_key",
+                        "type": "any",
+                        "label": "FIRST NAME_key"
+                    },
+                    {
+                        "name": "SURNAME_key",
+                        "type": "any",
+                        "label": "SURNAME_key"
+                    },
+                    {
+                        "name": "EMAIL_key",
+                        "type": "any",
+                        "label": "EMAIL_key"
+                    },
+                    {
+                        "name": "Telephone_key",
+                        "type": "any",
+                        "label": "Telephone_key"
+                    },
+                    {
+                        "name": "MOBILE_key",
+                        "type": "any",
+                        "label": "MOBILE_key"
+                    },
+                    {
+                        "name": "BAND_key",
+                        "type": "any",
+                        "label": "BAND_key"
+                    },
+                    {
+                        "name": "COMP_key",
+                        "type": "any",
+                        "label": "COMP_key"
+                    },
+                    {
+                        "name": "ADULT_key",
+                        "type": "any",
+                        "label": "ADULT_key"
+                    },
+                    {
+                        "name": "CHILD_key",
+                        "type": "any",
+                        "label": "CHILD_key"
+                    },
+                    {
+                        "name": "TOTAL_key",
+                        "type": "any",
+                        "label": "TOTAL_key"
+                    },
+                    {
+                        "name": "AMOUNT_key",
+                        "type": "any",
+                        "label": "AMOUNT_key"
+                    },
+                    {
+                        "name": "CONF_key",
+                        "type": "any",
+                        "label": "CONF_key"
+                    },
+                    {
+                        "name": "INV NO._key",
+                        "type": "any",
+                        "label": "INV NO._key"
+                    },
+                    {
+                        "name": "IMPORT INFO SENT_key",
+                        "type": "any",
+                        "label": "IMPORT INFO SENT_key"
+                    },
+                    {
+                        "name": "AXS Issued_key",
+                        "type": "any",
+                        "label": "AXS Issued_key"
+                    },
+                    {
+                        "name": "NOTES_key",
+                        "type": "any",
+                        "label": "NOTES_key"
+                    },
+                    {
+                        "name": "28 Days_key",
+                        "type": "any",
+                        "label": "28 Days_key"
+                    },
+                    {
+                        "name": "21 Days_key",
+                        "type": "any",
+                        "label": "21 Days_key"
+                    },
+                    {
+                        "name": "14 Days_key",
+                        "type": "any",
+                        "label": "14 Days_key"
+                    },
+                    {
+                        "name": "7 Days_key",
+                        "type": "any",
+                        "label": "7 Days_key"
+                    },
+                    {
+                        "name": "Due_key",
+                        "type": "any",
+                        "label": "Due_key"
+                    },
+                    {
+                        "name": "Current Chase status_key",
+                        "type": "any",
+                        "label": "Current Chase status_key"
+                    },
+                    {
+                        "name": "PDF LINK_key",
+                        "type": "any",
+                        "label": "PDF LINK_key"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 24,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{8.array}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 3049,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 25,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "{{19.master_header_check.col1}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.REF_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col2}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.TARGET_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col3}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.HOW_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col4}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.DATE__key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col5}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.SCHOOL_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col6}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`FIRST NAME_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col7}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.SURNAME_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col8}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.EMAIL_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col9}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.Telephone_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col10}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.MOBILE_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col11}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.BAND_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col12}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.COMP_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col13}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.ADULT_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col14}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.CHILD_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col15}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.TOTAL_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col16}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.AMOUNT_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col17}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.CONF_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col18}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`INV NO._key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col19}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`IMPORT INFO SENT_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col20}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`AXS Issued_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col21}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.NOTES_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col22}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`28 Days_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col23}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`21 Days_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col24}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`14 Days_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col25}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`7 Days_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col26}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.Due_key))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col27}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`Current Chase status_key`))}}"
+                    },
+                    {
+                        "name": "{{19.master_header_check.col28}}",
+                        "value": "{{first(map(toArray(get(8.array; 24.`__IMTINDEX__`)); \"value\"; \"key\"; 23.`PDF LINK_key`))}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 3349,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        },
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "REF",
+                        "type": "any",
+                        "label": "REF"
+                    },
+                    {
+                        "name": "TARGET",
+                        "type": "any",
+                        "label": "TARGET"
+                    },
+                    {
+                        "name": "HOW",
+                        "type": "any",
+                        "label": "HOW"
+                    },
+                    {
+                        "name": "DATE",
+                        "type": "any",
+                        "label": "DATE"
+                    },
+                    {
+                        "name": "SCHOOL",
+                        "type": "any",
+                        "label": "SCHOOL"
+                    },
+                    {
+                        "name": "FIRST NAME",
+                        "type": "any",
+                        "label": "FIRST NAME"
+                    },
+                    {
+                        "name": "SURNAME",
+                        "type": "any",
+                        "label": "SURNAME"
+                    },
+                    {
+                        "name": "EMAIL",
+                        "type": "any",
+                        "label": "EMAIL"
+                    },
+                    {
+                        "name": "Telephone",
+                        "type": "any",
+                        "label": "Telephone"
+                    },
+                    {
+                        "name": "MOBILE",
+                        "type": "any",
+                        "label": "MOBILE"
+                    },
+                    {
+                        "name": "BAND",
+                        "type": "any",
+                        "label": "BAND"
+                    },
+                    {
+                        "name": "COMP",
+                        "type": "any",
+                        "label": "COMP"
+                    },
+                    {
+                        "name": "ADULT",
+                        "type": "any",
+                        "label": "ADULT"
+                    },
+                    {
+                        "name": "CHILD",
+                        "type": "any",
+                        "label": "CHILD"
+                    },
+                    {
+                        "name": "TOTAL",
+                        "type": "any",
+                        "label": "TOTAL"
+                    },
+                    {
+                        "name": "AMOUNT",
+                        "type": "any",
+                        "label": "AMOUNT"
+                    },
+                    {
+                        "name": "CONF",
+                        "type": "any",
+                        "label": "CONF"
+                    },
+                    {
+                        "name": "INV NO.",
+                        "type": "any",
+                        "label": "INV NO."
+                    },
+                    {
+                        "name": "IMPORT INFO SENT",
+                        "type": "any",
+                        "label": "IMPORT INFO SENT"
+                    },
+                    {
+                        "name": "AXS Issued",
+                        "type": "any",
+                        "label": "AXS Issued"
+                    },
+                    {
+                        "name": "NOTES",
+                        "type": "any",
+                        "label": "NOTES"
+                    },
+                    {
+                        "name": "28 Days",
+                        "type": "any",
+                        "label": "28 Days"
+                    },
+                    {
+                        "name": "21 Days",
+                        "type": "any",
+                        "label": "21 Days"
+                    },
+                    {
+                        "name": "14 Days",
+                        "type": "any",
+                        "label": "14 Days"
+                    },
+                    {
+                        "name": "7 Days",
+                        "type": "any",
+                        "label": "7 Days"
+                    },
+                    {
+                        "name": "Due",
+                        "type": "any",
+                        "label": "Due"
+                    },
+                    {
+                        "name": "Current Chase status",
+                        "type": "any",
+                        "label": "Current Chase status"
+                    },
+                    {
+                        "name": "PDF LINK",
+                        "type": "any",
+                        "label": "PDF LINK"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 26,
+            "module": "google-sheets:addRow",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 3645603
+            },
+            "mapper": {
+                "from": "drive",
+                "mode": "select",
+                "values": {
+                    "0": "{{25.REF}}",
+                    "1": "{{25.TARGET}}",
+                    "2": "{{25.HOW}}",
+                    "3": "{{25.DATE}}",
+                    "4": "{{25.SCHOOL}}",
+                    "5": "{{25.`FIRST NAME`}}",
+                    "6": "{{25.SURNAME}}",
+                    "7": "{{25.EMAIL}}",
+                    "8": "{{25.Telephone}}",
+                    "9": "{{25.MOBILE}}",
+                    "10": "{{25.BAND}}",
+                    "11": "{{25.COMP}}",
+                    "12": "{{25.ADULT}}",
+                    "13": "{{25.CHILD}}",
+                    "14": "{{25.TOTAL}}",
+                    "15": "{{25.AMOUNT}}",
+                    "16": "{{25.CONF}}",
+                    "17": "{{25.`INV NO.`}}",
+                    "18": "{{25.`IMPORT INFO SENT`}}",
+                    "19": "{{25.`AXS Issued`}}",
+                    "20": "{{25.NOTES}}",
+                    "21": "{{25.`28 Days`}}",
+                    "22": "{{25.`21 Days`}}",
+                    "23": "{{25.`14 Days`}}",
+                    "24": "{{25.`7 Days`}}",
+                    "25": "{{25.Due}}",
+                    "26": "{{25.`Current Chase status`}}",
+                    "27": "{{25.`PDF LINK`}}"
+                },
+                "sheetId": "Sheet1",
+                "spreadsheetId": "/1PmIJOS2ezjHjmiIlupW6XOh36dSIThAbaofT4rh6nf8",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 3649,
+                    "y": -106
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "My Drive"
+                        },
+                        "mode": {
+                            "label": "Search by path"
+                        },
+                        "sheetId": {
+                            "label": "Sheet1"
+                        },
+                        "spreadsheetId": {
+                            "path": [
+                                "test array "
+                            ]
+                        },
+                        "includesHeaders": {
+                            "label": "Yes",
+                            "nested": [
+                                {
+                                    "name": "values",
+                                    "spec": [
+                                        {
+                                            "name": "0",
+                                            "type": "text",
+                                            "label": "REF (A)"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "type": "text",
+                                            "label": "TARGET (B)"
+                                        },
+                                        {
+                                            "name": "2",
+                                            "type": "text",
+                                            "label": "HOW (C)"
+                                        },
+                                        {
+                                            "name": "3",
+                                            "type": "text",
+                                            "label": "DATE (D)"
+                                        },
+                                        {
+                                            "name": "4",
+                                            "type": "text",
+                                            "label": "SCHOOL (E)"
+                                        },
+                                        {
+                                            "name": "5",
+                                            "type": "text",
+                                            "label": "FIRST NAME (F)"
+                                        },
+                                        {
+                                            "name": "6",
+                                            "type": "text",
+                                            "label": "SURNAME (G)"
+                                        },
+                                        {
+                                            "name": "7",
+                                            "type": "text",
+                                            "label": "EMAIL (H)"
+                                        },
+                                        {
+                                            "name": "8",
+                                            "type": "text",
+                                            "label": "Telephone (I)"
+                                        },
+                                        {
+                                            "name": "9",
+                                            "type": "text",
+                                            "label": "MOBILE (J)"
+                                        },
+                                        {
+                                            "name": "10",
+                                            "type": "text",
+                                            "label": "BAND (K)"
+                                        },
+                                        {
+                                            "name": "11",
+                                            "type": "text",
+                                            "label": "COMP (L)"
+                                        },
+                                        {
+                                            "name": "12",
+                                            "type": "text",
+                                            "label": "ADULT (M)"
+                                        },
+                                        {
+                                            "name": "13",
+                                            "type": "text",
+                                            "label": "CHILD (N)"
+                                        },
+                                        {
+                                            "name": "14",
+                                            "type": "text",
+                                            "label": "TOTAL (O)"
+                                        },
+                                        {
+                                            "name": "15",
+                                            "type": "text",
+                                            "label": "AMOUNT (P)"
+                                        },
+                                        {
+                                            "name": "16",
+                                            "type": "text",
+                                            "label": "CONF (Q)"
+                                        },
+                                        {
+                                            "name": "17",
+                                            "type": "text",
+                                            "label": "INV NO. (R)"
+                                        },
+                                        {
+                                            "name": "18",
+                                            "type": "text",
+                                            "label": "IMPORT INFO SENT (S)"
+                                        },
+                                        {
+                                            "name": "19",
+                                            "type": "text",
+                                            "label": "AXS Issued (T)"
+                                        },
+                                        {
+                                            "name": "20",
+                                            "type": "text",
+                                            "label": "NOTES (U)"
+                                        },
+                                        {
+                                            "name": "21",
+                                            "type": "text",
+                                            "label": "28 Days (V)"
+                                        },
+                                        {
+                                            "name": "22",
+                                            "type": "text",
+                                            "label": "21 Days (W)"
+                                        },
+                                        {
+                                            "name": "23",
+                                            "type": "text",
+                                            "label": "14 Days (X)"
+                                        },
+                                        {
+                                            "name": "24",
+                                            "type": "text",
+                                            "label": "7 Days (Y)"
+                                        },
+                                        {
+                                            "name": "25",
+                                            "type": "text",
+                                            "label": "Due (Z)"
+                                        },
+                                        {
+                                            "name": "26",
+                                            "type": "text",
+                                            "label": "Current Chase status  (AA)"
+                                        },
+                                        {
+                                            "name": "27",
+                                            "type": "text",
+                                            "label": "PDF LINK  (AB)"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Values"
+                                }
+                            ]
+                        },
+                        "insertDataOption": {
+                            "mode": "chose",
+                            "label": "Insert rows"
+                        },
+                        "valueInputOption": {
+                            "mode": "chose",
+                            "label": "User entered"
+                        },
+                        "insertUnformatted": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (ryankachf@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "mode",
+                        "type": "select",
+                        "label": "Search Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "select",
+                                "fromAll",
+                                "map"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertUnformatted",
+                        "type": "boolean",
+                        "label": "Unformatted",
+                        "required": true
+                    },
+                    {
+                        "name": "valueInputOption",
+                        "type": "select",
+                        "label": "Value input option",
+                        "validate": {
+                            "enum": [
+                                "USER_ENTERED",
+                                "RAW"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "insertDataOption",
+                        "type": "select",
+                        "label": "Insert data option",
+                        "validate": {
+                            "enum": [
+                                "INSERT_ROWS",
+                                "OVERWRITE"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "spreadsheetId",
+                        "type": "file",
+                        "label": "Spreadsheet ID",
+                        "required": true
+                    },
+                    {
+                        "name": "sheetId",
+                        "type": "select",
+                        "label": "Sheet Name",
+                        "required": true
+                    },
+                    {
+                        "name": "includesHeaders",
+                        "type": "select",
+                        "label": "Table contains headers",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                true,
+                                false
+                            ]
+                        }
+                    },
+                    {
+                        "name": "values",
+                        "spec": [
+                            {
+                                "name": "0",
+                                "type": "text",
+                                "label": "REF (A)"
+                            },
+                            {
+                                "name": "1",
+                                "type": "text",
+                                "label": "TARGET (B)"
+                            },
+                            {
+                                "name": "2",
+                                "type": "text",
+                                "label": "HOW (C)"
+                            },
+                            {
+                                "name": "3",
+                                "type": "text",
+                                "label": "DATE (D)"
+                            },
+                            {
+                                "name": "4",
+                                "type": "text",
+                                "label": "SCHOOL (E)"
+                            },
+                            {
+                                "name": "5",
+                                "type": "text",
+                                "label": "FIRST NAME (F)"
+                            },
+                            {
+                                "name": "6",
+                                "type": "text",
+                                "label": "SURNAME (G)"
+                            },
+                            {
+                                "name": "7",
+                                "type": "text",
+                                "label": "EMAIL (H)"
+                            },
+                            {
+                                "name": "8",
+                                "type": "text",
+                                "label": "Telephone (I)"
+                            },
+                            {
+                                "name": "9",
+                                "type": "text",
+                                "label": "MOBILE (J)"
+                            },
+                            {
+                                "name": "10",
+                                "type": "text",
+                                "label": "BAND (K)"
+                            },
+                            {
+                                "name": "11",
+                                "type": "text",
+                                "label": "COMP (L)"
+                            },
+                            {
+                                "name": "12",
+                                "type": "text",
+                                "label": "ADULT (M)"
+                            },
+                            {
+                                "name": "13",
+                                "type": "text",
+                                "label": "CHILD (N)"
+                            },
+                            {
+                                "name": "14",
+                                "type": "text",
+                                "label": "TOTAL (O)"
+                            },
+                            {
+                                "name": "15",
+                                "type": "text",
+                                "label": "AMOUNT (P)"
+                            },
+                            {
+                                "name": "16",
+                                "type": "text",
+                                "label": "CONF (Q)"
+                            },
+                            {
+                                "name": "17",
+                                "type": "text",
+                                "label": "INV NO. (R)"
+                            },
+                            {
+                                "name": "18",
+                                "type": "text",
+                                "label": "IMPORT INFO SENT (S)"
+                            },
+                            {
+                                "name": "19",
+                                "type": "text",
+                                "label": "AXS Issued (T)"
+                            },
+                            {
+                                "name": "20",
+                                "type": "text",
+                                "label": "NOTES (U)"
+                            },
+                            {
+                                "name": "21",
+                                "type": "text",
+                                "label": "28 Days (V)"
+                            },
+                            {
+                                "name": "22",
+                                "type": "text",
+                                "label": "21 Days (W)"
+                            },
+                            {
+                                "name": "23",
+                                "type": "text",
+                                "label": "14 Days (X)"
+                            },
+                            {
+                                "name": "24",
+                                "type": "text",
+                                "label": "7 Days (Y)"
+                            },
+                            {
+                                "name": "25",
+                                "type": "text",
+                                "label": "Due (Z)"
+                            },
+                            {
+                                "name": "26",
+                                "type": "text",
+                                "label": "Current Chase status  (AA)"
+                            },
+                            {
+                                "name": "27",
+                                "type": "text",
+                                "label": "PDF LINK  (AB)"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}

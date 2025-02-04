@@ -1,0 +1,136 @@
+{
+    "name": "Integration Google Drive, OpenAI (ChatGPT, Whisper, DALL-E), Monday, Microsoft Teams",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-drive:watchFilesInAFolder",
+            "version": 4,
+            "metadata": {
+                "designer": {
+                    "x": -183,
+                    "y": 16,
+                    "name": "Watch for new Audio file"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "openai-gpt-3:CreateTranscription",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 142,
+                    "y": 7,
+                    "name": "Transcribe audio file"
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "monday:ChangeMultipleColumnValues",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 396,
+                    "y": 13,
+                    "name": "Save transcription in CRM"
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 704,
+                    "y": -2,
+                    "name": "Summarise Transcription"
+                }
+            }
+        },
+        {
+            "id": 5,
+            "module": "monday:ChangeMultipleColumnValues",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 1004,
+                    "y": -2,
+                    "name": "Save summary"
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "microsoft-teams:sendMessage",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 1304,
+                    "y": -2,
+                    "name": "Message Sales member",
+                    "messages": [
+                        {
+                            "category": "setup",
+                            "severity": "error",
+                            "message": "Value must not be empty."
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 7,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 1604,
+                    "y": -2,
+                    "name": "Craft email follow up "
+                }
+            }
+        },
+        {
+            "id": 9,
+            "module": "microsoft-teams:sendMessage",
+            "version": 1,
+            "metadata": {
+                "designer": {
+                    "x": 1840,
+                    "y": -10,
+                    "name": "Email follow up sent for review",
+                    "messages": [
+                        {
+                            "category": "setup",
+                            "severity": "error",
+                            "message": "Value must not be empty."
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
